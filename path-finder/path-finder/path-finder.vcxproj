@@ -129,9 +129,14 @@
   <ItemGroup>
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="path-finder.cpp" />
+    <ClCompile Include="QueriesController.cpp" />
+    <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Map.h" />
+    <ClInclude Include="QueriesController.h" />
+    <ClInclude Include="Resources.h" />
+    <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

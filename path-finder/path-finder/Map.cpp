@@ -1,7 +1,10 @@
 #include "Map.h"
 
 
-Map::Map(int width, int height) : width(width), height(height) {
+Map::Map(int width, int height) :
+	width{ width },
+	height{ height },
+	airConnectionsQuantity{ 0 } {
 	this->map = new char* [this->height];
 
 	for (int i = 0; i < this->height; i++) {
@@ -17,7 +20,36 @@ Map::Map(int width, int height) : width(width), height(height) {
 
 
 Map::~Map() {
+	delete[] this->airConnections;
 	delete[] this->map;
+}
+
+
+void Map::readMap() {
+	char c = getchar();
+
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			c = getchar();
+
+			if (c == '\n') {
+				c = getchar();
+			}
+
+			this->map[i][j] = c;
+		}
+	}
+}
+
+
+void Map::readAirConnections() {
+	std::cin >> this->airConnectionsQuantity;
+
+	this->airConnections = new AirConnection[this->airConnectionsQuantity];
+
+	for (int i = 0; i < this->airConnectionsQuantity; i++) {
+		std::cin >> this->airConnections[i].source >> this->airConnections[i].destination>> this->airConnections[i].distance;
+	}
 }
 
 
@@ -34,17 +66,10 @@ void Map::printMap() {
 }
 
 
-void Map::readMap() {
-	char c = getchar();
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) {
-			c = getchar();
+void Map::printAirConnections() {
+	std::cerr << "\nAir connections:\n";
 
-			if (c == '\n') {
-				c = getchar();
-			}
-
-			this->map[i][j] = c;
-		}
+	for (int i = 0; i < this->airConnectionsQuantity; i++) {
+		std::cerr << this->airConnections[i].source << " " << this->airConnections[i].destination << " " << this->airConnections[i].distance << "\n";
 	}
 }

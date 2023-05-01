@@ -4,6 +4,10 @@
 #include <iostream>
 
 
+#include "String.h"
+#include "Resources.h"
+
+
 class Map
 {
 private:
@@ -11,12 +15,19 @@ private:
 	int height;
 	char** map;
 
+	int airConnectionsQuantity;
+	AirConnection* airConnections;
+
+
 	public:
 		Map(int width, int height);
 		~Map();
 
-		void printMap();
 		void readMap();
+		void readAirConnections();
+
+		void printMap();
+		void printAirConnections();
 
 		int getWidth();
 		int getHeight();
