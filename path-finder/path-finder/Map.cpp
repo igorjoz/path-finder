@@ -22,6 +22,8 @@ Map::~Map() {
 
 
 void Map::printMap() {
+	std::cerr << "\nMap:\n";
+
 	for (int i = 0; i < this->height; i++) {
 		for (int j = 0; j < this->width; j++) {
 			std::cerr << this->map[i][j];
@@ -33,15 +35,6 @@ void Map::printMap() {
 
 
 void Map::readMap() {
-	// input looks like this:
-	//......
-	//.A** B.
-	//......
-
-	// go character by character
-	// use getchar
-
-
 	char c = getchar();
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
