@@ -24,5 +24,9 @@ int main()
     queriesController.readQueries();
     queriesController.printQueries();
 
+    map.createGraph();
+
+    //queriesController.executeQueries();
+
     return 0;
 }
