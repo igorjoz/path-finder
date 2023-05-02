@@ -22,7 +22,9 @@ struct Query {
 
 
 struct Vertex {
-	char label;      // Label of the cell
-	int row, col;    // Row and column indices of the cell
+	//String label;      // Label of the cell
+	std::string label;      // Label of the cell
+	int row;
+	int column;    // Row and column indices of the cell
 	std::vector<int> adj; // Indices of neighboring cells
 };

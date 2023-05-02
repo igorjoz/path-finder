@@ -29,17 +29,17 @@ Map::~Map() {
 
 
 void Map::readMap() {
-	char c = getchar();
+	char character = getchar();
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			c = getchar();
+			character = getchar();
 
-			if (c == '\n') {
-				c = getchar();
+			if (character == '\n') {
+				character = getchar();
 			}
 
-			this->map[i][j] = c;
+			this->map[i][j] = character;
 		}
 	}
 }
@@ -79,26 +79,33 @@ void Map::printAirConnections() {
 
 
 void Map::createGraph() {
-    //vector<vertex> bfs_to_graph(char map[][20], int height, int width) {
     std::vector<Vertex> graph;
 
     int dr[4] = { 0, 0, -1, 1 }; // Delta row values for neighbors
     int dc[4] = { -1, 1, 0, 0 }; // Delta column values for neighbors
     std::queue<int> queue;
 
-    // Add vertices for all cells that are not walls or cities; cell name
+    //Add vertices for all cells that are not walls or cities; cell name
     for (int i = 0; i < height; i++) {
-        for (int c = 0; c < width; c++) {
-            char label = map[i][c];
+        std::string label = "";
 
-            if (label != '#' and label != '.' and label != '*') {
-                Vertex vertex = { label, i, c, std::vector<int>() };
+        for (int j = 0; j < width; j++) {
+            char letter = map[i][j];
+
+            if ((letter >= 'a' and letter <= 'z') or (letter >= 'A' and letter <= 'Z')) {
+                label += letter;
+            }
+
+            if ((letter == '#' or letter == '.' or letter == '*' or letter == '\n' or j + 1 == width) and label.size() > 0) {
+                Vertex vertex = { label, i, j, std::vector<int>() };
+                //std::cerr << vertex.label << " " << vertex.row << " " << vertex.column << "\n";
+                label = "";
                 graph.push_back(vertex);
             }
         }
     }
 
-    // Add edges for neighboring cells and cities
+    //Add edges for neighboring cells and cities
     for (int i = 0; i < graph.size(); i++) {
         Vertex& vertex = graph[i];
         queue.push(i);
@@ -110,21 +117,23 @@ void Map::createGraph() {
 
             for (int k = 0; k < 4; k++) {
                 int nr = u.row + dr[k];
-                int nc = u.col + dc[k];
+                int nc = u.column + dc[k];
 
                 if (nr >= 0 && nr < height && nc >= 0 && nc < width) {
-                    char label = map[nr][nc];
+                    //String label = "";
+                    std::string label = "";
+                    label += map[nr][nc];
 
-                    if (label != '#' && label != '.') {
+                    if (label != "#" && label != ".") {
                         // Add an undirected edge to neighboring cells
                         for (int j = 0; j < graph.size(); j++) {
-                            if (graph[j].row == nr && graph[j].col == nc) {
+                            if (graph[j].row == nr && graph[j].column == nc) {
                                 u.adj.push_back(j);
                                 graph[j].adj.push_back(u_idx);
                             }
                         }
                     }
-                    if (label != '.' && label != '*') {
+                    if (label != "." && label != "*") {
                         // Add a directed edge to cities
                         for (int j = 0; j < graph.size(); j++) {
                             if (graph[j].label == label) {
@@ -138,16 +147,16 @@ void Map::createGraph() {
         }
     }
 
-    //return graph;
-
     // print graph
     std::cerr << "\nGraph:\n";
 
     for (int i = 0; i < graph.size(); i++) {
-		std::cerr << graph[i].label << " " << graph[i].row << " " << graph[i].col << " ";
+        std::cerr << graph[i].label << " " << graph[i].row << " " << graph[i].column << " ";
+
         for (int j = 0; j < graph[i].adj.size(); j++) {
-			std::cerr << graph[i].adj[j] << " ";
-		}
-		std::cerr << "\n";
-	}
+            std::cerr << graph[i].adj[j] << " ";
+        }
+
+        std::cerr << "\n";
+    }
 }
