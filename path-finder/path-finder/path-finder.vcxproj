@@ -127,13 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="List.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="path-finder.cpp" />
     <ClCompile Include="QueriesController.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="List.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="QueriesController.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="String.h" />
