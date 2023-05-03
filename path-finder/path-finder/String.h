@@ -57,7 +57,6 @@ public:
 	String& operator+=(const String& string);
 	String& operator+=(const char* cString);
 	String& operator+=(const char character);
-	//String& operator+=(const int number);
 
 	String operator+(const String& string);
 	String operator+(const char* cString);
@@ -78,10 +77,6 @@ public:
 
 	int getLength() const;
 	const char* getCString() const;
-
-	/*friend bool operator==(const String& lhs, const String& rhs) {
-		return lhs.operator==(rhs);
-	}*/
 
 	friend std::ostream& operator<<(std::ostream& os, const String& string);
 

@@ -136,10 +136,16 @@ String Map::getCityName(int x, int y) {
 	if (map[x][y] != '*') {
 		return "";
 	}
+   
+	for (int i = 0; i < citiesCount; i++) {
+		City city = cities[i];
+
+		if (city.x == x && city.y == y) {
+			return city.name;
+		}
+	}
     
-    String cityName = findCityName(x, y);
-    
-    return cityName;
+    return "";
 }
 
 
@@ -157,23 +163,16 @@ void Map::createGraph() {
         String cityName = city.name;
 
         queue<tuple<int, int, int>> queue;
-        bool** visited = new bool* [height];
-
-        for (int j = 0; j < height; j++) {
-            visited[j] = new bool[width];
-
-            for (int k = 0; k < width; k++) {
-                visited[j][k] = false;
-            }
-        }
+        bool* visited = new bool[height * width];
+        memset(visited, false, height * width * sizeof(bool));
 
         queue.push({ x, y, 0 });
-        visited[x][y] = true;
+        visited[x * width + y] = true;
 
         while (!queue.empty()) {
-			int curX = get<0>(queue.front());
-			int curY = get<1>(queue.front());
-			int curDist = get<2>(queue.front());
+            int curX = get<0>(queue.front());
+            int curY = get<1>(queue.front());
+            int curDist = get<2>(queue.front());
 
             queue.pop();
 
@@ -182,10 +181,10 @@ void Map::createGraph() {
                 int newY = curY + dir.second;
 
                 if (newX >= 0 and newX < height and newY >= 0 and newY < width and
-                    map[newX][newY] != '.' and !isPositionLetter(newX, newY) and !visited[newX][newY])
+                    map[newX][newY] != '.' and !isPositionLetter(newX, newY) and !visited[newX * width + newY])
                 {
                     if (isPositionCity(newX, newY)) {
-                        String neighborCityName = findCityName(newX, newY);
+                        String neighborCityName = getCityName(newX, newY);
 
                         if (neighborCityName == cityName) {
                             continue;
@@ -194,22 +193,19 @@ void Map::createGraph() {
                         graph->addEdge(cityName, neighborCityName, curDist + 1);
                     }
 
-                    if (map[newX][newY] == '#' and !visited[newX][newY]) {
+                    if (map[newX][newY] == '#' and !visited[newX * width + newY]) {
                         queue.push({ newX, newY, curDist + 1 });
-                        visited[newX][newY] = true;
+                        visited[newX * width + newY] = true;
                     }
                 }
             }
         }
 
-        for (int j = 0; j < height; j++) {
-            delete[] visited[j];
-        }
         delete[] visited;
     }
 
     for (int i = 0; i < airConnectionsQuantity; i++) {
-		AirConnection airConnection = airConnections[i];
+        AirConnection airConnection = airConnections[i];
 
         graph->addAirConnection(airConnection.source, airConnection.destination, airConnection.distance);
     }

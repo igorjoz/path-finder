@@ -163,8 +163,6 @@ private:
     std::vector<std::list<std::pair<String, T>>> m_buckets;
     size_t m_size;
     double m_max_load_factor;
-
-    //std::vector<T> m_data;
 };
 
 template <typename T>
