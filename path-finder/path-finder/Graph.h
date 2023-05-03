@@ -24,6 +24,7 @@ public:
 	Graph(int citiesCount);
 	~Graph();
 	void addEdge(const String& u, const String& v, int weight);
+	void addAirConnection(const String& u, const String& v, int weight);
 	int getV();
 
 	void printGraph();

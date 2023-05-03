@@ -4,6 +4,9 @@
 #include <iostream>
 
 
+#include "Pair.h"
+
+
 #include "String.h"
 #include "Resources.h"
 #include "Graph.h"

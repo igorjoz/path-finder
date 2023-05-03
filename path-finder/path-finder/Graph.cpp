@@ -13,19 +13,12 @@ Graph::Graph(int citiesCount)
 
 
 Graph::~Graph() {
-	//delete[] adjacencyList;
 }
 
 
 void Graph::addEdge(const String& u, const String& v, int weight) {
 	adjacencyList[u].push_back(make_pair(v, weight));
-	//adjacencyList[v].push_back(make_pair(u, weight));
 }
-
-
-//List<Vertex>* Graph::getAdjacencyList() {
-//	return adjacencyList;
-//}
 
 
 int Graph::getV() {
@@ -50,19 +43,19 @@ void Graph::printGraph() {
 pair<int, unordered_map<String, String, StringHash>> Graph::findShortestPath(const String& source, const String& destination) {
     unordered_map<String, int, StringHash> distances;
     unordered_map<String, String, StringHash> previous;
-    priority_queue<pair<int, String>, vector<pair<int, String>>, greater<pair<int, String>>> pq;
+    priority_queue<pair<int, String>, vector<pair<int, String>>, greater<pair<int, String>>> priorityQueue;
 
     for (const auto& entry : adjacencyList) {
         distances[entry.first] = numeric_limits<int>::max();
     }
 
     distances[source] = 0;
-    pq.push({ 0, source });
+    priorityQueue.push({ 0, source });
 
-    while (!pq.empty()) {
-        String currentCity = pq.top().second;
-        int currentDistance = pq.top().first;
-        pq.pop();
+    while (!priorityQueue.empty()) {
+        String currentCity = priorityQueue.top().second;
+        int currentDistance = priorityQueue.top().first;
+        priorityQueue.pop();
 
         if (currentDistance > distances[currentCity]) {
             continue;
@@ -76,20 +69,19 @@ pair<int, unordered_map<String, String, StringHash>> Graph::findShortestPath(con
             if (newDistance < distances[neighborCity]) {
                 distances[neighborCity] = newDistance;
                 previous[neighborCity] = currentCity;
-                pq.push({ newDistance, neighborCity });
+                priorityQueue.push({ newDistance, neighborCity });
             }
         }
     }
 
     if (previous.find(destination) == previous.end()) {
-        //cout << "No path found from " << source << " to " << destination << endl;
-		return { 0, previous };
+        cerr << "No path found from " << source << " to " << destination << endl;
+        return { 0, previous };
     }
 
-    //cout << "Total distance between " << source << " and " << destination << ": " << distances[destination] << endl;
-    //cout << distances[destination] << "\n";
     return { distances[destination], previous };
 }
+
 
 void Graph::findAndPrintShortestPath(const String& source, const String& destination) {
     pair<int, unordered_map<String, String, StringHash>> result = findShortestPath(source, destination);
@@ -118,13 +110,11 @@ void Graph::findAndPrintShortestPath(const String& source, const String& destina
     path.push_back(source);
     reverse(path.begin(), path.end());
 
-    //cout << "Shortest path from " << source << " to " << destination << " with distance " << distance << ": ";
-
     cout << distance;
 
-	if (path.size() > 2) {
-		cout << " ";
-	}
+    if (path.size() > 2) {
+        cout << " ";
+    }
 
     for (size_t i = 1; i < path.size() - 1; i++) {
         cout << path[i];
@@ -135,4 +125,15 @@ void Graph::findAndPrintShortestPath(const String& source, const String& destina
     }
     
     cout << "\n";
+}
+
+
+void Graph::addAirConnection(const String& u, const String& v, int weight) {
+    if (weight > 1) {
+        adjacencyList[u].push_back(make_pair(v, weight));
+    }
+    else {
+        adjacencyList[u].push_back(make_pair(v, weight));
+        adjacencyList[v].push_back(make_pair(u, weight));
+    }
 }

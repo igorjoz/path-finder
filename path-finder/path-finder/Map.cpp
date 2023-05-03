@@ -57,13 +57,13 @@ void Map::readMap() {
 
 
 void Map::readAirConnections() {
-	cin >> this->airConnectionsQuantity;
+    cin >> this->airConnectionsQuantity;
 
-	this->airConnections = new AirConnection[this->airConnectionsQuantity];
+    this->airConnections = new AirConnection[this->airConnectionsQuantity];
 
-	for (int i = 0; i < this->airConnectionsQuantity; i++) {
-		cin >> this->airConnections[i].source >> this->airConnections[i].destination>> this->airConnections[i].distance;
-	}
+    for (int i = 0; i < this->airConnectionsQuantity; i++) {
+        cin >> this->airConnections[i].source >> this->airConnections[i].destination >> this->airConnections[i].distance;
+    }
 }
 
 
@@ -148,7 +148,7 @@ void Map::createGraph() {
 
     graph = new Graph(citiesCount);
 
-    vector<pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+    vector<Pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
     for (int i = 0; i < citiesCount; i++) {
         City city = cities[i];
@@ -211,7 +211,7 @@ void Map::createGraph() {
     for (int i = 0; i < airConnectionsQuantity; i++) {
 		AirConnection airConnection = airConnections[i];
 
-        graph->addEdge(airConnection.source, airConnection.destination, airConnection.distance);
+        graph->addAirConnection(airConnection.source, airConnection.destination, airConnection.distance);
     }
 }
 
