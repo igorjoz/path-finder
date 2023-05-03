@@ -1,12 +1,15 @@
 #include "Map.h"
 
 
+using namespace std;
+
+
 Map::Map(int width, int height) :
 	width{ width },
 	height{ height },
 	airConnectionsQuantity{ 0 },
 	citiesCount{ 0 },
-	citiesNames{ std::vector<String>() },
+	citiesNames{ vector<String>() },
     graph{ nullptr } {
 	
     this->airConnections = nullptr;
@@ -54,42 +57,42 @@ void Map::readMap() {
 
 
 void Map::readAirConnections() {
-	std::cin >> this->airConnectionsQuantity;
+	cin >> this->airConnectionsQuantity;
 
 	this->airConnections = new AirConnection[this->airConnectionsQuantity];
 
 	for (int i = 0; i < this->airConnectionsQuantity; i++) {
-		std::cin >> this->airConnections[i].source >> this->airConnections[i].destination>> this->airConnections[i].distance;
+		cin >> this->airConnections[i].source >> this->airConnections[i].destination>> this->airConnections[i].distance;
 	}
 }
 
 
 void Map::printMap() {
-	std::cerr << "\nMap:\n";
+	cerr << "\nMap:\n";
 
 	for (int i = 0; i < this->height; i++) {
 		for (int j = 0; j < this->width; j++) {
-			std::cerr << this->map[i][j];
+			cerr << this->map[i][j];
 		}
 
-		std::cerr << "\n";
+		cerr << "\n";
 	}
 }
 
 
 void Map::printAirConnections() {
-	std::cerr << "\nAir connections:\n";
+	cerr << "\nAir connections:\n";
 
 	for (int i = 0; i < this->airConnectionsQuantity; i++) {
 		AirConnection airConnection = this->airConnections[i];
         
-		std::cerr << airConnection.source << " " << airConnection.destination << " " << airConnection.distance << "\n";
+		cerr << airConnection.source << " " << airConnection.destination << " " << airConnection.distance << "\n";
 	}
 }
 
 
 void Map::printGraph() {
-	std::cerr << "\nGraph:\n";
+	cerr << "\nGraph:\n";
 
     graph->printGraph();
 }
@@ -110,7 +113,7 @@ void Map::findCities() {
         }
     }
 
-	std::cerr << "Cities count (findCities): " << citiesCount << "\n";
+	cerr << "Cities count (findCities): " << citiesCount << "\n";
 }
 
 
@@ -129,54 +132,6 @@ int Map::getCityIndex(String cityName) {
 }
 
 
-//std::vector<Position> Map::findPath(const String& city1, const String& city2) {
-//    if (cities.count(city1) == 0 || cities.count(city2) == 0) {
-//        return {}; // City not found
-//    }
-//
-//    Position start = cities[city1];
-//    Position end = cities[city2];
-//
-//    std::map<int, std::map<int, Position>> parent;
-//    std::queue<Position> queue;
-//    queue.push(start);
-//    Position current;
-//
-//    std::vector<Position> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-//
-//    while (!queue.empty()) {
-//        current = queue.front();
-//        queue.pop();
-//
-//        if (current == end) {
-//            break;
-//        }
-//
-//        for (const auto& dir : directions) {
-//            int newX = current.first + dir.first;
-//            int newY = current.second + dir.second;
-//
-//            if (isValidMove(newX, newY) && parent[newX].count(newY) == 0) {
-//                parent[newX][newY] = current;
-//                queue.push({ newX, newY });
-//            }
-//        }
-//    }
-//
-//    if (current != end) {
-//        return {}; // No path found
-//    }
-//
-//    std::vector<Position> path;
-//    while (current != start) {
-//        path.push_back(current);
-//        current = parent[current.first][current.second];
-//    }
-//    std::reverse(path.begin(), path.end());
-//    return path;
-//}
-
-
 String Map::getCityName(int x, int y) {
 	if (map[x][y] != '*') {
 		return "";
@@ -193,7 +148,7 @@ void Map::createGraph() {
 
     graph = new Graph(citiesCount);
 
-    std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+    vector<pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
     for (int i = 0; i < citiesCount; i++) {
         City city = cities[i];
@@ -201,7 +156,7 @@ void Map::createGraph() {
         int y = city.y;
         String cityName = city.name;
 
-        std::queue<std::tuple<int, int, int>> queue;
+        queue<tuple<int, int, int>> queue;
         bool** visited = new bool* [height];
 
         for (int j = 0; j < height; j++) {
@@ -216,11 +171,9 @@ void Map::createGraph() {
         visited[x][y] = true;
 
         while (!queue.empty()) {
-            //auto [curX, curY, curDist] = queue.front();
-
-			int curX = std::get<0>(queue.front());
-			int curY = std::get<1>(queue.front());
-			int curDist = std::get<2>(queue.front());
+			int curX = get<0>(queue.front());
+			int curY = get<1>(queue.front());
+			int curDist = get<2>(queue.front());
 
             queue.pop();
 
@@ -263,35 +216,10 @@ void Map::createGraph() {
 }
 
 
-//void Map::findShortestPath(const String& source, const String& destination) {
-//    std::pair<int, std::vector<String>> result = graph->findShortestPath(source, destination);
-//    int distance = result.first;
-//    std::vector<String> path = result.second;
-//
-//    std::cout << distance << "\n";
-//    printShortestPath(path);
-//}
-
-
-//void Map::printShortestPath(const std::vector<String>& path) {
-//    if (!path.empty()) {
-//        for (size_t i = 0; i < path.size(); ++i) {
-//            if (i != 0) {
-//                std::cout << " -> ";
-//            }
-//            std::cout << path[i];
-//        }
-//        std::cout << std::endl;
-//    }
-//}
-
-
 void Map::findShortestPath(const String& source, const String& destination) {
-	//graph->findShortestPath(source, destination);
-
     int distance = graph->findShortestPath(source, destination).first;
 
-	std::cout << distance << "\n";
+	cout << distance << "\n";
 }
 
 
@@ -301,7 +229,6 @@ void Map::findAndPrintShortestPath(const String& source, const String& destinati
 
 
 bool Map::isPositionLetter(int x, int y) {
-    //return x >= 0 and x < heightand y >= 0 and y < widthand isalpha(map[x][y]);
     return x >= 0 and x < height and y >= 0 and y < width and map[x][y] != '.' and map[x][y] != '#' and map[x][y] != '*';
 }
 
@@ -312,7 +239,7 @@ bool Map::isPositionCity(int x, int y) {
 
 
 String Map::findCityName(int i, int j) {
-    std::vector<std::pair<int, int>> namePositions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
+    vector<pair<int, int>> namePositions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
     String cityName = "";
 
     for (const auto& position : namePositions) {
@@ -320,8 +247,6 @@ String Map::findCityName(int i, int j) {
         int y = j + position.second;
 
         if (isPositionLetter(x, y)) {
-            //cityName += map[x][y];
-
             if (isPositionLetter(x, y - 1)) {
                 while (isPositionLetter(x, y)) {
                     y--;
@@ -343,7 +268,7 @@ String Map::findCityName(int i, int j) {
                 }
             }
 
-            //std::cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
+            //cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
 
             break;
         }

@@ -2,6 +2,20 @@
 
 
 #include <vector>
+#include <map>
+#include <unordered_map>
+#include <functional>
+#include <algorithm>
+#include <cctype>
+
+#include <queue>
+#include <limits>
+#include <set>
+
+#include <list>
+#include <stdexcept>
+#include <utility>
+#include <iterator>
 
 
 #include "String.h"
@@ -18,15 +32,6 @@ struct Query {
 	String source;
 	String destination;
 	bool isDetailed;
-};
-
-
-struct Vertex {
-	//String label;      // Label of the cell
-	std::string label;      // Label of the cell
-	int row;
-	int column;    // Row and column indices of the cell
-	std::vector<int> adj; // Indices of neighboring cells
 };
 
 
