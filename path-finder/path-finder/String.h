@@ -20,10 +20,7 @@ public:
 	String(const String& string);
 	String(const char* cString);
 	String(int number);
-
-	// move constructor
 	String(String&& string) noexcept;
-	// move assignment operator
 
 	~String();
 
@@ -57,21 +54,29 @@ public:
 
 	String& operator+=(const String& string);
 	String& operator+=(const char* cString);
-	String& operator+=(const int number);
+	String& operator+=(const char character);
+	//String& operator+=(const int number);
 
 	String operator+(const String& string);
 	String operator+(const char* cString);
 
+	bool operator==(const String& string) const;
 	bool operator==(const String& string);
-	bool operator==(const char* cString);
+	bool operator==(const char* cString) const;
 
 	bool operator!=(const String& string);
 	bool operator!=(const char* cString);
+
+	bool operator<(const String& other) const;
 
 	char& operator[](int index);
 
 	int getLength() const;
 	const char* getCString() const;
+
+	/*friend bool operator==(const String& lhs, const String& rhs) {
+		return lhs.operator==(rhs);
+	}*/
 
 	friend std::ostream& operator<<(std::ostream& os, const String& string);
 

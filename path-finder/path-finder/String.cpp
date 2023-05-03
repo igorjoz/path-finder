@@ -330,21 +330,36 @@ String& String::operator+=(const char* cString) {
 }
 
 
-String& String::operator+=(const int number) {
-	char* cString = new char[11];
-	_itoa_s(number, cString, 11, 10);
-
-	length += strlen(cString);
+String& String::operator+=(const char character) {
+	length++;
 
 	char* temp = new char[length + 1];
 	strcpy_s(temp, length + 1, this->string);
-	strcat_s(temp, length + 1, cString);
+	temp[length - 1] = character;
+	temp[length] = '\0';
 
 	delete[] this->string;
 	this->string = temp;
 
 	return *this;
 }
+
+
+//String& String::operator+=(const int number) {
+//	char* cString = new char[11];
+//	_itoa_s(number, cString, 11, 10);
+//
+//	length += strlen(cString);
+//
+//	char* temp = new char[length + 1];
+//	strcpy_s(temp, length + 1, this->string);
+//	strcat_s(temp, length + 1, cString);
+//
+//	delete[] this->string;
+//	this->string = temp;
+//
+//	return *this;
+//}
 
 
 String String::operator+(const String& string) {
@@ -363,12 +378,30 @@ String String::operator+(const char* cString) {
 }
 
 
+//bool String::operator==(const String& string) const {
+//	return strcmp(this->string, string.string) == 0;
+//}
+
+bool String::operator==(const String& other) const {
+	if (length != other.length) {
+		return false;
+	}
+
+	for (int i = 0; i < length; i++) {
+		if (string[i] != other.string[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
 bool String::operator==(const String& string) {
 	return strcmp(this->string, string.string) == 0;
 }
 
-
-bool String::operator==(const char* cString) {
+bool String::operator==(const char* cString) const {
 	return strcmp(this->string, cString) == 0;
 }
 
@@ -380,6 +413,11 @@ bool String::operator!=(const String& string) {
 
 bool String::operator!=(const char* cString) {
 	return strcmp(this->string, cString) != 0;
+}
+
+
+bool String::operator<(const String& other) const {
+	return strcmp(string, other.string) < 0;
 }
 
 
