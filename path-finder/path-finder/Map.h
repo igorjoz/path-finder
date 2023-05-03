@@ -5,11 +5,17 @@
 
 #include <vector>
 #include <queue>
+#include <cctype>
+#include <algorithm>
 
 
 #include "String.h"
 #include "Resources.h"
 #include "Graph.h"
+
+
+typedef std::pair<int, int> Position;
+typedef std::pair<String, Position> City;
 
 
 class Map
@@ -19,12 +25,25 @@ private:
 	int height;
 	char** map;
 
+	int citiesCount;
+	std::vector<String> citiesNames;
+
 	int airConnectionsQuantity;
 	AirConnection* airConnections;
 
-	//Graph* graph;
+	Graph* graph;
 
 public:
+	Map(char** map, int height, int width) : map(map), height(height), width(width) {
+		findCities();
+	}
+	std::map<String, Position> cities;
+	
+	void findCities();
+	bool isValidMove(int x, int y);
+	std::vector<Position> findPath(const String& city1, const String& city2);
+
+
 	Map(int width, int height);
 	~Map();
 
@@ -33,9 +52,13 @@ public:
 
 	void printMap();
 	void printAirConnections();
+	void printGraph();
 
 	void createGraph();
 
+	int getCityIndex(String cityName);
+	String getCityName(int cityIndex, int y);
+	
 	int getWidth();
 	int getHeight();
 	int getMapValue(int x, int y);

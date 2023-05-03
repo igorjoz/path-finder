@@ -17,14 +17,14 @@ int main()
 
     map.readMap();
     map.readAirConnections();
-
-    map.printMap();
-    map.printAirConnections();
-
     queriesController.readQueries();
-    queriesController.printQueries();
+    
+    //map.printMap();
+    //map.printAirConnections();
+    //queriesController.printQueries();
 
     map.createGraph();
+	map.printGraph();
 
     //queriesController.executeQueries();
 

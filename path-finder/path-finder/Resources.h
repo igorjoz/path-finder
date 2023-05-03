@@ -28,3 +28,10 @@ struct Vertex {
 	int column;    // Row and column indices of the cell
 	std::vector<int> adj; // Indices of neighboring cells
 };
+
+
+struct StringHash {
+	size_t operator()(const String& str) const {
+		return std::hash<std::string>{}(str.getCString());
+	}
+};
