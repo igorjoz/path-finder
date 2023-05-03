@@ -131,7 +131,9 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="path-finder.cpp" />
     <ClCompile Include="QueriesController.cpp" />
+    <ClCompile Include="Queue.cpp" />
     <ClCompile Include="String.cpp" />
+    <ClCompile Include="UnorderedMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
@@ -139,8 +141,10 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="QueriesController.h" />
+    <ClInclude Include="Queue.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="UnorderedMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
