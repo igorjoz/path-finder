@@ -1,5 +1,17 @@
 #pragma once
 
+#include "Vector.h"
+
+#include "List.h"
+#include "Node.h"
+
+#include "Queue"
+#include "PriorityQueue.h"
+
+#include "Pair.h"
+
+#include "String.h"
+
 
 #include <vector>
 #include <map>
@@ -17,8 +29,7 @@
 #include <utility>
 #include <iterator>
 
-
-#include "String.h"
+using namespace std;
 
 
 struct AirConnection {
@@ -37,7 +48,7 @@ struct Query {
 
 struct StringHash {
 	size_t operator()(const String& str) const {
-		return std::hash<std::string>{}(str.getCString());
+		return hash<string>{}(str.getCString());
 	}
 };
 

@@ -19,7 +19,7 @@ public:
 	List();
 	List(const List<T>& list);
 
-	//~List();
+	~List();
 
 	void print() const;
 	void append(T data);
@@ -122,16 +122,16 @@ List<T>::List(const List<T>& list) {
 }
 
 
-//template<typename T>
-//List<T>::~List() {
-//	while (head != nullptr) {
-//		Node<T>* temp = head;
-//		head = head->next;
-//		delete temp;
-//	}
-//
-//	tail = nullptr;
-//}
+template<typename T>
+List<T>::~List() {
+	while (head != nullptr) {
+		Node<T>* temp = head;
+		head = head->next;
+		delete temp;
+	}
+
+	tail = nullptr;
+}
 
 
 template<typename T>

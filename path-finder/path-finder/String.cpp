@@ -354,23 +354,6 @@ String& String::operator+=(const char character) {
 }
 
 
-//String& String::operator+=(const int number) {
-//	char* cString = new char[11];
-//	_itoa_s(number, cString, 11, 10);
-//
-//	length += strlen(cString);
-//
-//	char* temp = new char[length + 1];
-//	strcpy_s(temp, length + 1, this->string);
-//	strcat_s(temp, length + 1, cString);
-//
-//	delete[] this->string;
-//	this->string = temp;
-//
-//	return *this;
-//}
-
-
 String String::operator+(const String& string) {
 	String temp(*this);
 	temp += string;
@@ -386,10 +369,6 @@ String String::operator+(const char* cString) {
 	return temp;
 }
 
-
-//bool String::operator==(const String& string) const {
-//	return strcmp(this->string, string.string) == 0;
-//}
 
 bool String::operator==(const String& other) const {
 	if (length != other.length) {

@@ -71,4 +71,34 @@ public:
         }
         return rear->data;
     }
+
+
+	void print() {
+		if (isEmpty()) {
+			std::cout << "The queue is empty." << std::endl;
+			return;
+		}
+
+		Node* current = front;
+
+		while (current != nullptr) {
+			std::cout << current->data << " ";
+			current = current->next;
+		}
+
+		std::cout << std::endl;
+	}
+
+
+	int size() {
+		int count = 0;
+		Node* current = front;
+
+		while (current != nullptr) {
+			count++;
+			current = current->next;
+		}
+
+		return count;
+	}
 };
