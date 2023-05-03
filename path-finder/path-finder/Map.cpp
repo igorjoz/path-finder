@@ -48,48 +48,6 @@ void Map::readMap() {
             }
 
             this->map[i][j] = character;
-
-            //if (character == '*') {
-                //int nameStartX = -1;
-                //int nameStartY = -1;
-                //// Check for city name in 8 directions from the city marker
-                //for (int dx = -1; dx <= 1; ++dx) {
-                //    for (int dy = -1; dy <= 1; ++dy) {
-                //        // Skip the city marker itself
-                //        if (dx == 0 and dy == 0) {
-                //            continue;
-                //        }
-
-                //        int newX = j + dx;
-                //        int newY = i + dy;
-
-                //        // Check if the neighboring cell is within bounds and contains a letter
-                //        if (newX >= 0 and newX < width and newY >= 0 and newY < height and isalpha(map[newY][newX])) {
-                //            nameStartX = newX;
-                //            nameStartY = newY;
-                //            break;
-                //        }
-                //    }
-                //    if (nameStartX != -1) {
-                //        break;
-                //    }
-                //}
-
-                // If the city name is found, store it in citiesNames
-                //if (nameStartX != -1) {
-                //    String cityName = "";
-                //    while (isalpha(map[nameStartY][nameStartX])) {
-                //        cityName += map[nameStartY][nameStartX];
-                //        nameStartX += (nameStartX - j);
-                //        nameStartY += (nameStartY - i);
-
-                //        // Check if the next cell is within bounds
-                //        if (nameStartX < 0 || nameStartX >= width || nameStartY < 0 || nameStartY >= height) break;
-                //    }
-                //    citiesNames.push_back(cityName);
-                //    citiesCount++;
-                //}
-            //}
         }
     }
 }
@@ -143,6 +101,9 @@ void Map::findCities() {
 			if (isPositionCity(i, j)) {
                 String cityName(findCityName(i, j));
 				citiesCount += 1;
+				citiesNames.push_back(cityName);
+
+				cities.push_back(City{ cityName, i, j });
             }
         }
     }
@@ -166,55 +127,59 @@ int Map::getCityIndex(String cityName) {
 }
 
 
-std::vector<Position> Map::findPath(const String& city1, const String& city2) {
-    if (cities.count(city1) == 0 || cities.count(city2) == 0) {
-        return {}; // City not found
-    }
-
-    Position start = cities[city1];
-    Position end = cities[city2];
-
-    std::map<int, std::map<int, Position>> parent;
-    std::queue<Position> queue;
-    queue.push(start);
-    Position current;
-
-    std::vector<Position> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-
-    while (!queue.empty()) {
-        current = queue.front();
-        queue.pop();
-
-        if (current == end) {
-            break;
-        }
-
-        for (const auto& dir : directions) {
-            int newX = current.first + dir.first;
-            int newY = current.second + dir.second;
-
-            if (isValidMove(newX, newY) && parent[newX].count(newY) == 0) {
-                parent[newX][newY] = current;
-                queue.push({ newX, newY });
-            }
-        }
-    }
-
-    if (current != end) {
-        return {}; // No path found
-    }
-
-    std::vector<Position> path;
-    while (current != start) {
-        path.push_back(current);
-        current = parent[current.first][current.second];
-    }
-    std::reverse(path.begin(), path.end());
-    return path;
-}
+//std::vector<Position> Map::findPath(const String& city1, const String& city2) {
+//    if (cities.count(city1) == 0 || cities.count(city2) == 0) {
+//        return {}; // City not found
+//    }
+//
+//    Position start = cities[city1];
+//    Position end = cities[city2];
+//
+//    std::map<int, std::map<int, Position>> parent;
+//    std::queue<Position> queue;
+//    queue.push(start);
+//    Position current;
+//
+//    std::vector<Position> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+//
+//    while (!queue.empty()) {
+//        current = queue.front();
+//        queue.pop();
+//
+//        if (current == end) {
+//            break;
+//        }
+//
+//        for (const auto& dir : directions) {
+//            int newX = current.first + dir.first;
+//            int newY = current.second + dir.second;
+//
+//            if (isValidMove(newX, newY) && parent[newX].count(newY) == 0) {
+//                parent[newX][newY] = current;
+//                queue.push({ newX, newY });
+//            }
+//        }
+//    }
+//
+//    if (current != end) {
+//        return {}; // No path found
+//    }
+//
+//    std::vector<Position> path;
+//    while (current != start) {
+//        path.push_back(current);
+//        current = parent[current.first][current.second];
+//    }
+//    std::reverse(path.begin(), path.end());
+//    return path;
+//}
 
 
 String Map::getCityName(int x, int y) {
+	if (map[x][y] != '*') {
+		return "";
+	}
+    
     String cityName = findCityName(x, y);
     
     return cityName;
@@ -227,43 +192,53 @@ void Map::createGraph() {
     graph = new Graph(citiesCount);
 
     std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-    
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (isPositionCity(i, j)) {
-                String cityName = findCityName(i, j);
-                std::vector<std::pair<int, int>> namePositions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
 
-                std::map<String, bool> visited;
-                std::queue<std::pair<int, int>> queue;
-                queue.push({ i, j });
+	for (int i = 0; i < citiesCount; i++) {
+		City city = cities[i];
+		int x = city.x;
+		int y = city.y;
+		String cityName = city.name;
+        
+        std::queue<std::pair<int, int>> queue;
+		bool** visited = new bool* [height];
+                
+		for (int j = 0; j < height; j++) {
+			visited[j] = new bool[width];
+                    
+			for (int k = 0; k < width; k++) {
+				visited[j][k] = false;
+			}
+		}
+                
+        queue.push({ x, y });
+        visited[x][y] = true;
 
-                while (!queue.empty()) {
-                    auto current = queue.front();
-                    queue.pop();
+        while (!queue.empty()) {
+            auto current = queue.front();
+            queue.pop();
 
-                    for (const auto& dir : directions) {
-                        int newX = current.first + dir.first;
-                        int newY = current.second + dir.second;
+            for (const auto& dir : directions) {
+                int newX = current.first + dir.first;
+                int newY = current.second + dir.second;
 
-                        if (newX >= 0 and newX < height and newY >= 0 and newY < width and
-                            map[newX][newY] != '.' and !visited[getCityName(newX, newY)]) {
-                            if (map[newX][newY] == '*') {
-                                String neighborCityName = "";
-                                for (const auto& pos : namePositions) {
-                                    int x = newX + pos.first;
-                                    int y = newY + pos.second;
-                                    if (x >= 0 && x < height && y >= 0 && y < width && isalpha(map[x][y])) {
-                                        neighborCityName += map[x][y];
-                                    }
-                                }
-                                graph->addEdge(cityName, neighborCityName, 0);
-                            }
-                            else if (map[newX][newY] == '#') {
-                                queue.push({ newX, newY });
-                            }
-                            visited[getCityName(newX, newY)] = true;
-                        }
+                if (newX >= 0 and newX < height and newY >= 0 and newY < width and
+					map[newX][newY] != '.' and !isalpha(map[newX][newY] and !visited[newX][newY])
+                    )
+                {
+                    if (isPositionCity(newX, newY)) {
+                        String neighborCityName = findCityName(newX, newY);
+
+						if (neighborCityName == cityName) {
+							continue;
+						}
+
+                        int distance = std::abs(newX - x) + std::abs(newY - y);
+                        graph->addEdge(cityName, neighborCityName, distance);
+                    }
+
+                    if (map[newX][newY] == '#' and !visited[newX][newY]) {
+                        queue.push({ newX, newY });
+                        visited[newX][newY] = true;
                     }
                 }
             }
@@ -296,11 +271,24 @@ String Map::findCityName(int i, int j) {
 
         if (isPositionLetter(x, y)) {
             cityName += map[x][y];
-            y++;
 
-            while (isPositionLetter(x, y)) {
-                cityName += map[x][y];
+            if (isPositionLetter(x, y + 1)) {
                 y++;
+
+                while (isPositionLetter(x, y)) {
+                    cityName += map[x][y];
+                    y++;
+                }
+            }
+            else {
+                y--;
+                
+                while (isPositionLetter(x, y)) {
+                    cityName += map[x][y];
+					y--;
+                }
+
+				cityName.reverse();
             }
 
             std::cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
@@ -325,4 +313,20 @@ int Map::getHeight() const {
 
 int Map::getMapValue(int x, int y) const {
 	return map[x][y];
+}
+
+
+City* Map::getCityByName(const String& name) {
+	for (auto& city : cities) {
+		if (city.name == name) {
+			return &city;
+		}
+	}
+
+	return nullptr;
+}
+
+
+bool Map::isCity(int x, int y) const {
+	return map[x][y] == '*';
 }

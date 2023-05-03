@@ -1,15 +1,6 @@
 #include "Graph.h"
 
 
-//Graph::Graph(int citiesCount) :
-//	citiesCount(citiesCount),
-//	citiesIndices(),
-//	edges(),
-//	V(citiesCount) {
-//	adjacencyList = new List<Vertex>[citiesCount];
-//}
-
-
 Graph::Graph(int citiesCount)
 	: citiesCount{ citiesCount },
 	V{ citiesCount },
@@ -31,7 +22,7 @@ Graph::~Graph() {
 
 void Graph::addEdge(const String& u, const String& v, int weight) {
 	adjacencyList[u].push_back(std::make_pair(v, weight));
-	adjacencyList[v].push_back(std::make_pair(u, weight));
+	//adjacencyList[v].push_back(std::make_pair(u, weight));
 }
 
 

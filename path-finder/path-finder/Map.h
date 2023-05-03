@@ -15,7 +15,7 @@
 
 
 typedef std::pair<int, int> Position;
-typedef std::pair<String, Position> City;
+//typedef std::pair<String, Position> City;
 
 
 class Map
@@ -25,6 +25,7 @@ private:
 	int height;
 	char** map;
 
+	std::vector<City> cities;
 	int citiesCount;
 	std::vector<String> citiesNames;
 
@@ -37,11 +38,10 @@ public:
 	Map(char** map, int height, int width) : map(map), height(height), width(width) {
 		findCities();
 	}
-	std::map<String, Position> cities;
 	
 	void findCities();
 	bool isValidMove(int x, int y);
-	std::vector<Position> findPath(const String& city1, const String& city2);
+	//std::vector<Position> findPath(const String& city1, const String& city2);
 
 
 	Map(int width, int height);
@@ -61,6 +61,9 @@ public:
 	
 	bool isPositionLetter(int x, int y);
 	bool isPositionCity(int x, int y);
+	
+	bool isCity(int x, int y) const;
+	void BFS(City& city, int x, int y, const String& cityName);
 
 	String findCityName(int x, int y);
 
@@ -71,5 +74,6 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 	int getMapValue(int x, int y) const;
+	City* getCityByName(const String& name);
 };
 

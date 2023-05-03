@@ -35,3 +35,10 @@ struct StringHash {
 		return std::hash<std::string>{}(str.getCString());
 	}
 };
+
+
+struct City {
+	String name;
+	int x;
+	int y;
+};
