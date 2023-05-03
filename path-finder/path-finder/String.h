@@ -47,6 +47,8 @@ public:
 	bool isEmpty() const;
 	int parseToInt();
 
+	void reverse();
+
 	String& operator=(const String& string);
 	String& operator=(const char* cString);
 	String& operator=(const int number);
@@ -65,6 +67,8 @@ public:
 	bool operator==(const char* cString) const;
 
 	bool operator!=(const String& string);
+	bool operator!=(String& string);
+	bool operator!=(const String& string) const;
 	bool operator!=(const char* cString);
 
 	bool operator<(const String& other) const;

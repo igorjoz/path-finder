@@ -260,6 +260,15 @@ int String::parseToInt() {
 }
 
 
+void String::reverse() {
+	for (int i = 0; i < length / 2; i++) {
+		char temp = string[i];
+		string[i] = string[length - i - 1];
+		string[length - i - 1] = temp;
+	}
+}
+
+
 String& String::operator=(const String& string) {
 	if (this != &string) {
 		delete[] this->string;
@@ -406,8 +415,18 @@ bool String::operator==(const char* cString) const {
 }
 
 
+bool String::operator!=(String& string) {
+	return strcmp(this->string, string.string) != 0;
+}
+
+
 bool String::operator!=(const String& string) {
 	return strcmp(this->string, string.string) != 0;
+}
+
+
+bool String::operator!=(const String& cString) const {
+	return strcmp(this->string, cString.string) != 0;
 }
 
 
