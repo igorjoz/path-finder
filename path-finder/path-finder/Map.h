@@ -56,11 +56,20 @@ public:
 
 	void createGraph();
 
+	
+
+	
+	bool isPositionLetter(int x, int y);
+	bool isPositionCity(int x, int y);
+
+	String findCityName(int x, int y);
+
+
 	int getCityIndex(String cityName);
 	String getCityName(int cityIndex, int y);
-	
-	int getWidth();
-	int getHeight();
-	int getMapValue(int x, int y);
+
+	int getWidth() const;
+	int getHeight() const;
+	int getMapValue(int x, int y) const;
 };
 

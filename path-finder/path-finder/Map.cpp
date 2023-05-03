@@ -4,8 +4,10 @@
 Map::Map(int width, int height) :
 	width{ width },
 	height{ height },
-	airConnectionsQuantity{ 0 } {
-    //graph{ new Graph } {
+	airConnectionsQuantity{ 0 },
+	citiesCount{ 0 },
+	citiesNames{ std::vector<String>() },
+    graph{ nullptr } {
 	
     this->airConnections = nullptr;
     this->map = new char* [this->height];
@@ -23,8 +25,14 @@ Map::Map(int width, int height) :
 
 
 Map::~Map() {
-	delete[] this->airConnections;
+	for (int i = 0; i < this->height; i++) {
+		delete[] this->map[i];
+	}
+
 	delete[] this->map;
+
+	delete[] this->airConnections;
+	delete this->graph;
 }
 
 
@@ -41,44 +49,47 @@ void Map::readMap() {
 
             this->map[i][j] = character;
 
-            // Check if the character is a city marker
-            if (character == '*') {
-                int nameStartX = -1;
-                int nameStartY = -1;
-                // Check for city name in 8 directions from the city marker
-                for (int dx = -1; dx <= 1; ++dx) {
-                    for (int dy = -1; dy <= 1; ++dy) {
-                        // Skip the city marker itself
-                        if (dx == 0 && dy == 0) continue;
+            //if (character == '*') {
+                //int nameStartX = -1;
+                //int nameStartY = -1;
+                //// Check for city name in 8 directions from the city marker
+                //for (int dx = -1; dx <= 1; ++dx) {
+                //    for (int dy = -1; dy <= 1; ++dy) {
+                //        // Skip the city marker itself
+                //        if (dx == 0 and dy == 0) {
+                //            continue;
+                //        }
 
-                        int newX = j + dx;
-                        int newY = i + dy;
+                //        int newX = j + dx;
+                //        int newY = i + dy;
 
-                        // Check if the neighboring cell is within bounds and contains a letter
-                        if (newX >= 0 && newX < width && newY >= 0 && newY < height && isalpha(map[newY][newX])) {
-                            nameStartX = newX;
-                            nameStartY = newY;
-                            break;
-                        }
-                    }
-                    if (nameStartX != -1) break;
-                }
+                //        // Check if the neighboring cell is within bounds and contains a letter
+                //        if (newX >= 0 and newX < width and newY >= 0 and newY < height and isalpha(map[newY][newX])) {
+                //            nameStartX = newX;
+                //            nameStartY = newY;
+                //            break;
+                //        }
+                //    }
+                //    if (nameStartX != -1) {
+                //        break;
+                //    }
+                //}
 
                 // If the city name is found, store it in citiesNames
-                if (nameStartX != -1) {
-                    String cityName = "";
-                    while (isalpha(map[nameStartY][nameStartX])) {
-                        cityName += map[nameStartY][nameStartX];
-                        nameStartX += (nameStartX - j);
-                        nameStartY += (nameStartY - i);
+                //if (nameStartX != -1) {
+                //    String cityName = "";
+                //    while (isalpha(map[nameStartY][nameStartX])) {
+                //        cityName += map[nameStartY][nameStartX];
+                //        nameStartX += (nameStartX - j);
+                //        nameStartY += (nameStartY - i);
 
-                        // Check if the next cell is within bounds
-                        if (nameStartX < 0 || nameStartX >= width || nameStartY < 0 || nameStartY >= height) break;
-                    }
-                    citiesNames.push_back(cityName);
-                    citiesCount++;
-                }
-            }
+                //        // Check if the next cell is within bounds
+                //        if (nameStartX < 0 || nameStartX >= width || nameStartY < 0 || nameStartY >= height) break;
+                //    }
+                //    citiesNames.push_back(cityName);
+                //    citiesCount++;
+                //}
+            //}
         }
     }
 }
@@ -124,73 +135,19 @@ void Map::printGraph() {
 }
 
 
-//void Map::createGraph() {
-//    int cityCount = 0;
-//
-//    for (int i = 0; i < height; i++) {
-//        for (int j = 0; j < width; j++) {
-//            if (map[i][j] == '*') {
-//                cityCount++;
-//            }
-//        }
-//    }
-//
-//    graph = new Graph(cityCount);
-//
-//    // Perform BFS for each city to find its neighbors
-//    std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-//    for (int i = 0; i < height; i++) {
-//        for (int j = 0; j < width; j++) {
-//            if (map[i][j] == '*') {
-//                String cityName = getCityName(i, j);
-//                std::map<String, bool> visited;
-//                std::queue<std::pair<int, int>> queue;
-//                queue.push({ i, j });
-//
-//                while (!queue.empty()) {
-//                    auto current = queue.front();
-//                    queue.pop();
-//
-//                    for (const auto& dir : directions) {
-//                        int newX = current.first + dir.first;
-//                        int newY = current.second + dir.second;
-//
-//                        if (newX >= 0 && newX < height && newY >= 0 && newY < width &&
-//                            map[newX][newY] != '.' && !visited[getCityName(newX, newY)]) {
-//                            if (map[newX][newY] == '*') {
-//                                graph->addEdge(cityName, getCityName(newX, newY), 0);
-//                            }
-//                            else if (map[newX][newY] == '#' || map[newX][newY] == '*') {
-//                                queue.push({ newX, newY });
-//                            }
-//                            visited[getCityName(newX, newY)] = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    // Add air connections to the graph
-//    for (int i = 0; i < airConnectionsQuantity; i++) {
-//        // Add the edge for the air connection
-//        graph->addEdge(airConnections[i].source, airConnections[i].destination, airConnections[i].distance);
-//    }
-//}
-
-
 void Map::findCities() {
+	citiesCount = 0;
+    
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            if (map[i][j] == '*') {
-                String cityName = "";
-                for (int k = j + 1; k < width && isalpha(map[i][k]); ++k) {
-                    cityName += map[i][k];
-                }
-                cities[cityName] = { i, j };
+			if (isPositionCity(i, j)) {
+                String cityName(findCityName(i, j));
+				citiesCount += 1;
             }
         }
     }
+
+	std::cerr << "Cities count (findCities): " << citiesCount << "\n";
 }
 
 
@@ -258,122 +215,24 @@ std::vector<Position> Map::findPath(const String& city1, const String& city2) {
 
 
 String Map::getCityName(int x, int y) {
-    String cityName = "";
-    int newX = x;
-    int newY = y + 1;
-    while (newY < width && std::isupper(map[newX][newY])) {
-        cityName += map[newX][newY];
-        newY++;
-    }
+    String cityName = findCityName(x, y);
+    
     return cityName;
 }
 
 
-
-
-
-//void Map::createGraph() {
-//    int cityCount = 0;
-//
-//    for (int i = 0; i < height; i++) {
-//        for (int j = 0; j < width; j++) {
-//            if (map[i][j] == '*') {
-//                cityCount++;
-//            }
-//        }
-//    }
-//
-//    graph = new Graph(cityCount);
-//
-//    // Perform BFS for each city to find its neighbors
-//    std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
-//    for (int i = 0; i < height; i++) {
-//        for (int j = 0; j < width; j++) {
-//            if (map[i][j] == '*') {
-//                String cityName = "";
-//                for (int k = j + 1; k < width && isalpha(map[i][k]); ++k) {
-//                    cityName += map[i][k];
-//                }
-//
-//                std::map<String, bool> visited;
-//                std::queue<std::pair<int, int>> queue;
-//                queue.push({ i, j });
-//
-//                while (!queue.empty()) {
-//                    auto current = queue.front();
-//                    queue.pop();
-//
-//                    for (const auto& dir : directions) {
-//                        int newX = current.first + dir.first;
-//                        int newY = current.second + dir.second;
-//
-//                        if (newX >= 0 && newX < height && newY >= 0 && newY < width &&
-//                            map[newX][newY] != '.' && !visited[getCityName(newX, newY)]) {
-//                            if (map[newX][newY] == '*') {
-//                                String neighborCityName = "";
-//                                for (int k = newY + 1; k < width && isalpha(map[newX][k]); ++k) {
-//                                    neighborCityName += map[newX][k];
-//                                }
-//                                graph->addEdge(cityName, neighborCityName, 0);
-//                                
-//								// print the edge
-//								std::cout << cityName << " " << neighborCityName << " " << 0 << std::endl;
-//                            }
-//                            else if (map[newX][newY] == '#') {
-//                                queue.push({ newX, newY });
-//                            }
-//                            visited[getCityName(newX, newY)] = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    // Add air connections to the graph
-//    for (int i = 0; i < airConnectionsQuantity; i++) {
-//        // Add the edge for the air connection
-//        graph->addEdge(airConnections[i].source, airConnections[i].destination, airConnections[i].distance);
-//    }
-//}
-
-
 void Map::createGraph() {
-    int cityCount = 0;
+    findCities();
 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (map[i][j] == '*') {
-                cityCount++;
-            }
-        }
-    }
+    graph = new Graph(citiesCount);
 
-    graph = new Graph(cityCount);
-
-    // Perform BFS for each city to find its neighbors
     std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+    
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (map[i][j] == '*') {
-                String cityName = "";
+            if (isPositionCity(i, j)) {
+                String cityName = findCityName(i, j);
                 std::vector<std::pair<int, int>> namePositions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
-
-                for (const auto& position : namePositions) {
-                    int x = i + position.first;
-                    int y = j + position.second;
-                    
-                    if (x >= 0 and x < height and y >= 0 and y < width and isalpha(map[x][y])) {
-                        cityName += map[x][y];
-                        
-                        while (x >= 0 and x < height and y >= 0 and y + 1 < width and isalpha(map[x][y])) {
-                            y++;
-                            cityName += map[x][y];
-                        }
-                        
-                        break;
-                    }
-                }
 
                 std::map<String, bool> visited;
                 std::queue<std::pair<int, int>> queue;
@@ -414,4 +273,56 @@ void Map::createGraph() {
     for (int i = 0; i < airConnectionsQuantity; i++) {
         graph->addEdge(airConnections[i].source, airConnections[i].destination, airConnections[i].distance);
     }
+}
+
+
+bool Map::isPositionLetter(int x, int y) {
+    return x >= 0 and x < height and y >= 0 and y < width and isalpha(map[x][y]);
+}
+
+
+bool Map::isPositionCity(int x, int y) {
+	return x >= 0 and x < height and y >= 0 and y < width and map[x][y] == '*';
+}
+
+
+String Map::findCityName(int i, int j) {
+    std::vector<std::pair<int, int>> namePositions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1} };
+    String cityName = "";
+
+    for (const auto& position : namePositions) {
+        int x = i + position.first;
+        int y = j + position.second;
+
+        if (isPositionLetter(x, y)) {
+            cityName += map[x][y];
+            y++;
+
+            while (isPositionLetter(x, y)) {
+                cityName += map[x][y];
+                y++;
+            }
+
+            std::cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
+
+            break;
+        }
+    }
+
+    return cityName;
+}
+
+
+int Map::getWidth() const {
+	return width;
+}
+
+
+int Map::getHeight() const {
+	return height;
+}
+
+
+int Map::getMapValue(int x, int y) const {
+	return map[x][y];
 }
