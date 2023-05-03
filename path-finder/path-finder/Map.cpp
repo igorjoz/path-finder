@@ -81,7 +81,9 @@ void Map::printAirConnections() {
 	std::cerr << "\nAir connections:\n";
 
 	for (int i = 0; i < this->airConnectionsQuantity; i++) {
-		std::cerr << this->airConnections[i].source << " " << this->airConnections[i].destination << " " << this->airConnections[i].distance << "\n";
+		AirConnection airConnection = this->airConnections[i];
+        
+		std::cerr << airConnection.source << " " << airConnection.destination << " " << airConnection.distance << "\n";
 	}
 }
 
@@ -193,61 +195,106 @@ void Map::createGraph() {
 
     std::vector<std::pair<int, int>> directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
-	for (int i = 0; i < citiesCount; i++) {
-		City city = cities[i];
-		int x = city.x;
-		int y = city.y;
-		String cityName = city.name;
-        
-        std::queue<std::pair<int, int>> queue;
-		bool** visited = new bool* [height];
-                
-		for (int j = 0; j < height; j++) {
-			visited[j] = new bool[width];
-                    
-			for (int k = 0; k < width; k++) {
-				visited[j][k] = false;
-			}
-		}
-                
-        queue.push({ x, y });
+    for (int i = 0; i < citiesCount; i++) {
+        City city = cities[i];
+        int x = city.x;
+        int y = city.y;
+        String cityName = city.name;
+
+        std::queue<std::tuple<int, int, int>> queue;
+        bool** visited = new bool* [height];
+
+        for (int j = 0; j < height; j++) {
+            visited[j] = new bool[width];
+
+            for (int k = 0; k < width; k++) {
+                visited[j][k] = false;
+            }
+        }
+
+        queue.push({ x, y, 0 });
         visited[x][y] = true;
 
         while (!queue.empty()) {
-            auto current = queue.front();
+            //auto [curX, curY, curDist] = queue.front();
+
+			int curX = std::get<0>(queue.front());
+			int curY = std::get<1>(queue.front());
+			int curDist = std::get<2>(queue.front());
+
             queue.pop();
 
             for (const auto& dir : directions) {
-                int newX = current.first + dir.first;
-                int newY = current.second + dir.second;
+                int newX = curX + dir.first;
+                int newY = curY + dir.second;
 
                 if (newX >= 0 and newX < height and newY >= 0 and newY < width and
-					map[newX][newY] != '.' and !isalpha(map[newX][newY] and !visited[newX][newY])
-                    )
+                    map[newX][newY] != '.' and !isalpha(map[newX][newY]) and !visited[newX][newY])
                 {
                     if (isPositionCity(newX, newY)) {
                         String neighborCityName = findCityName(newX, newY);
 
-						if (neighborCityName == cityName) {
-							continue;
-						}
+                        if (neighborCityName == cityName) {
+                            continue;
+                        }
 
-                        int distance = std::abs(newX - x) + std::abs(newY - y);
-                        graph->addEdge(cityName, neighborCityName, distance);
+                        graph->addEdge(cityName, neighborCityName, curDist + 1);
                     }
 
                     if (map[newX][newY] == '#' and !visited[newX][newY]) {
-                        queue.push({ newX, newY });
+                        queue.push({ newX, newY, curDist + 1 });
                         visited[newX][newY] = true;
                     }
                 }
             }
         }
+
+        for (int j = 0; j < height; j++) {
+            delete[] visited[j];
+        }
+        delete[] visited;
     }
 
     for (int i = 0; i < airConnectionsQuantity; i++) {
         graph->addEdge(airConnections[i].source, airConnections[i].destination, airConnections[i].distance);
     }
+}
+
+
+//void Map::findShortestPath(const String& source, const String& destination) {
+//    std::pair<int, std::vector<String>> result = graph->findShortestPath(source, destination);
+//    int distance = result.first;
+//    std::vector<String> path = result.second;
+//
+//    std::cout << distance << "\n";
+//    printShortestPath(path);
+//}
+
+
+//void Map::printShortestPath(const std::vector<String>& path) {
+//    if (!path.empty()) {
+//        for (size_t i = 0; i < path.size(); ++i) {
+//            if (i != 0) {
+//                std::cout << " -> ";
+//            }
+//            std::cout << path[i];
+//        }
+//        std::cout << std::endl;
+//    }
+//}
+
+
+void Map::findShortestPath(const String& source, const String& destination) {
+	//graph->findShortestPath(source, destination);
+
+    int distance = graph->findShortestPath(source, destination).first;
+
+	std::cout << distance << "\n";
+}
+
+
+void Map::findAndPrintShortestPath(const String& source, const String& destination) {
+	graph->findAndPrintShortestPath(source, destination);
 }
 
 
