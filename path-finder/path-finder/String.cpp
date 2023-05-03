@@ -415,6 +415,11 @@ bool String::operator==(const char* cString) const {
 }
 
 
+bool String::operator==(const char* cString) {
+	return strcmp(this->string, cString) == 0;
+}
+
+
 bool String::operator!=(String& string) {
 	return strcmp(this->string, string.string) != 0;
 }

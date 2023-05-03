@@ -65,6 +65,7 @@ public:
 	bool operator==(const String& string) const;
 	bool operator==(const String& string);
 	bool operator==(const char* cString) const;
+	bool operator==(const char* cString);
 
 	bool operator!=(const String& string);
 	bool operator!=(String& string);
