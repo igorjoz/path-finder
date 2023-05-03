@@ -25,6 +25,8 @@ private:
 
 		void printQueries();
 
+		void executeQueries();
+
 		int getQueriesQuantity();
 		Query* getQueries();
 };

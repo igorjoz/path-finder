@@ -19,7 +19,7 @@ void QueriesController::readQueries() {
 	queries = new Query[queriesQuantity];
 
 	for (int i = 0; i < queriesQuantity; i++) {
-		std::cin >> queries[i].source >> queries[i].destination;
+		std::cin >> queries[i].source >> queries[i].destination >> queries[i].isDetailed;
 	}
 }
 
@@ -28,7 +28,23 @@ void QueriesController::printQueries() {
 	std::cerr << "\nQueries:\n";
 
 	for (int i = 0; i < queriesQuantity; i++) {
-		std::cerr << queries[i].source << " " << queries[i].destination << "\n";
+		Query query = queries[i];
+
+		std::cerr << query.source << " " << query.destination << " " << query.isDetailed << "\n";
+	}
+}
+
+
+void QueriesController::executeQueries() {
+	for (int i = 0; i < queriesQuantity; i++) {
+		Query query = queries[i];
+
+		if (query.isDetailed) {
+			map->findAndPrintShortestPath(query.source, query.destination);
+		}
+		else {
+			map->findShortestPath(query.source, query.destination);
+		}
 	}
 }
 

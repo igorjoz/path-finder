@@ -26,7 +26,7 @@ int main()
     map.createGraph();
 	map.printGraph();
 
-    //queriesController.executeQueries();
+    queriesController.executeQueries();
 
     return 0;
 }
