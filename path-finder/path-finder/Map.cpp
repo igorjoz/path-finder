@@ -229,7 +229,7 @@ void Map::createGraph() {
                 int newY = curY + dir.second;
 
                 if (newX >= 0 and newX < height and newY >= 0 and newY < width and
-                    map[newX][newY] != '.' and !isalpha(map[newX][newY]) and !visited[newX][newY])
+                    map[newX][newY] != '.' and !isPositionLetter(newX, newY) and !visited[newX][newY])
                 {
                     if (isPositionCity(newX, newY)) {
                         String neighborCityName = findCityName(newX, newY);
@@ -256,7 +256,9 @@ void Map::createGraph() {
     }
 
     for (int i = 0; i < airConnectionsQuantity; i++) {
-        graph->addEdge(airConnections[i].source, airConnections[i].destination, airConnections[i].distance);
+		AirConnection airConnection = airConnections[i];
+
+        graph->addEdge(airConnection.source, airConnection.destination, airConnection.distance);
     }
 }
 
@@ -294,12 +296,13 @@ void Map::findShortestPath(const String& source, const String& destination) {
 
 
 void Map::findAndPrintShortestPath(const String& source, const String& destination) {
-	graph->findAndPrintShortestPath(source, destination);
+    graph->findAndPrintShortestPath(source, destination);
 }
 
 
 bool Map::isPositionLetter(int x, int y) {
-    return x >= 0 and x < height and y >= 0 and y < width and isalpha(map[x][y]);
+    //return x >= 0 and x < heightand y >= 0 and y < widthand isalpha(map[x][y]);
+    return x >= 0 and x < height and y >= 0 and y < width and map[x][y] != '.' and map[x][y] != '#' and map[x][y] != '*';
 }
 
 
@@ -317,8 +320,20 @@ String Map::findCityName(int i, int j) {
         int y = j + position.second;
 
         if (isPositionLetter(x, y)) {
-            cityName += map[x][y];
+            //cityName += map[x][y];
 
+            if (isPositionLetter(x, y - 1)) {
+                while (isPositionLetter(x, y)) {
+                    y--;
+                }
+            }
+
+            if (!isPositionLetter(x, y)) {
+                y++;
+            }
+            
+            cityName += map[x][y];
+            
             if (isPositionLetter(x, y + 1)) {
                 y++;
 
@@ -327,18 +342,8 @@ String Map::findCityName(int i, int j) {
                     y++;
                 }
             }
-            else {
-                y--;
-                
-                while (isPositionLetter(x, y)) {
-                    cityName += map[x][y];
-					y--;
-                }
 
-				cityName.reverse();
-            }
-
-            std::cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
+            //std::cerr << "findCityName(" << x << ", " << y << "):" << cityName << "\n";
 
             break;
         }

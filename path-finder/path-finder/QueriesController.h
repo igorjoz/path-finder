@@ -29,5 +29,7 @@ private:
 
 		int getQueriesQuantity();
 		Query* getQueries();
+
+		bool checkShortestPath(String source, String destination);
 };
 
